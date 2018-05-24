@@ -6,7 +6,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class FmsFile {
 	private ArrayList<String> files = new ArrayList<String>();
@@ -45,7 +47,11 @@ public class FmsFile {
 		
 	}
 	
-	public void processFiles() {		
+	public void processFiles() {
+		Date date = new Date();
+		SimpleDateFormat date_format = new SimpleDateFormat("_ddMMyyyy_HHmmss");
+		String str_date = date_format.format(date);
+		
 		for (int i = 0; i < this.files.size(); i++) {
 			String content = "";
 			String line = "";
@@ -58,7 +64,7 @@ public class FmsFile {
 			
 			try {
 				file = new File(this.files.get(i));
-				fw = new FileWriter(file.getPath() + ".csv");
+				fw = new FileWriter(file.getPath() + str_date + ".csv");
 				
 				System.out.println("Processing file " + file.getName());
 				
