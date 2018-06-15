@@ -196,6 +196,62 @@ public class FmsFile {
 		return header;
 	}
 	
+	private String getHeaderU() {
+		String header;
+		
+		header = "Código Fábrica;";
+		header = header + "Grupo;";
+		header = header + "Tipo de caja;";
+		header = header + "Fecha Gregoriana de Necesidad;";
+		header = header + "Fecha Otis de necesidad;";
+		header = header + "Cantidad necesaria;";
+		header = header + "Semana Otis Expedición Prevista;";
+		header = header + "Uso Interno;";
+		header = header + "Código Proveedor;";
+		header = header + "Contrato;";
+		header = header + "Código de subsistema;";
+		header = header + "Total bultos subsistema;";
+		header = header + "Secuencia del bulto en subsistema;";
+		header = header + "Peso total del bulto;";
+		header = header + "Uso interno;";
+		header = header + "Descripción idioma X;";
+		header = header + "Descripción idioma X;";
+		header = header + "Descripción idioma X;";
+		header = header + "Descripción idioma X;";
+		header = header + "N/A;";
+		header = header + "Indicador de tipo de registro;";
+		
+		return header;
+	}
+	
+	private String processLineU(String line) {
+		String lineProcessed = "";
+		
+		lineProcessed += line.substring(0, 1) + ";";
+		lineProcessed += line.substring(1, 5) + ";";
+		lineProcessed += line.substring(5, 8) + ";";
+		lineProcessed += line.substring(8, 13) + ";";
+		lineProcessed += line.substring(13, 17) + ";";
+		lineProcessed += line.substring(17, 24) + ";";
+		lineProcessed += line.substring(24, 27) + ";";
+		lineProcessed += line.substring(27, 28) + ";";
+		lineProcessed += line.substring(28, 34) + ";";
+		lineProcessed += line.substring(34, 42) + ";";
+		lineProcessed += line.substring(42, 48) + ";";
+		lineProcessed += line.substring(48, 50) + ";";
+		lineProcessed += line.substring(50, 52) + ";";
+		lineProcessed += line.substring(52, 56) + ";";
+		lineProcessed += line.substring(56, 57) + ";";
+		lineProcessed += line.substring(57, 92) + ";";
+		lineProcessed += line.substring(92, 127) + ";";
+		lineProcessed += line.substring(127, 162) + ";";
+		lineProcessed += line.substring(162, 197) + ";";
+		lineProcessed += line.substring(197, 199) + ";";
+		lineProcessed += line.substring(199, 200) + ";";
+		
+		return lineProcessed;
+	}
+	
 	private String processLineT(String line) {
 		String lineProcessed = "";
 		
@@ -443,6 +499,9 @@ public class FmsFile {
 			FileWriter fwT = null;
 			PrintWriter pwT = null;
 			
+			FileWriter fwU = null;
+			PrintWriter pwU = null;
+			
 			try {
 				file = new File(this.files.get(i));
 				fr = new FileReader(file);
@@ -473,6 +532,10 @@ public class FmsFile {
 				pwT = new PrintWriter(fwT);
 				pwT.println(this.getHeaderT());
 				
+				fwU = new FileWriter(file.getPath() + str_date + "_U.csv");
+				pwU = new PrintWriter(fwU);
+				pwU.println(this.getHeaderU());
+				
 				while ( (line = br.readLine()) != null ) {
 					if ( line.substring(199, 200).equals("L") ) {
 						processedline = this.processLineL(line);
@@ -492,6 +555,9 @@ public class FmsFile {
 					} else if ( line.substring(199, 200).equals("T") ) {
 						processedline = this.processLineT(line);
 						pwT.println(processedline);
+					} else if ( line.substring(199, 200).equals("U") ) {
+						processedline = this.processLineT(line);
+						pwU.println(processedline);
 					}
 				}
 			} catch (Exception e) {
