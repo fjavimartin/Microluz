@@ -5,13 +5,43 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class FmsFile {
-	private ArrayList<String> files = new ArrayList<String>();
+	
+	private File file = null;
+	private FileReader fr = null;
+	private BufferedReader br = null;
+	
+	private FileWriter fwL = null;
+	private PrintWriter pwL = null;
+	
+	private FileWriter fwD = null;
+	private PrintWriter pwD = null;
+	
+	private FileWriter fwF = null;
+	private PrintWriter pwF = null;
+	
+	private FileWriter fwEX = null;
+	private PrintWriter pwEX = null;
+	
+	private FileWriter fwR = null;
+	private PrintWriter pwR = null;
+	
+	private FileWriter fwT = null;
+	private PrintWriter pwT = null;
+	
+	private FileWriter fwU = null;
+	private PrintWriter pwU = null;
+	
+	private FileWriter fwSP = null;
+	private PrintWriter pwSP = null;
+	
+	private FileWriter fwC = null;
+	private PrintWriter pwC = null;
+	
+	private int lineCounter = 0;
 	
 	private String getHeaderL() {
 		String header;
@@ -105,7 +135,7 @@ public class FmsFile {
 		return header;
 	}
 	
-	private String getHeaderE() {
+	private String getHeaderEX() {
 		String header;
 		
 		header = "Código Fábrica;";
@@ -402,7 +432,7 @@ public class FmsFile {
 		return lineProcessed;
 	}
 	
-	private String processLineE(String line) {
+	private String processLineEX(String line) {
 		String lineProcessed = "";
 		
 		lineProcessed += line.substring(0, 1) + ";";
@@ -519,282 +549,150 @@ public class FmsFile {
 		return lineProcessed;
 	}
 	
-	private String getHeader() {
-		String header;
-		
-		header = "Código Fábrica;";
-		header = header + "Grupo;";
-		header = header + "Tipo de Caja;";
-		header = header + "Fecha Gregoriana de Necesidad;";
-		header = header + "Fecha Otis de necesidad;";
-		header = header + "Cantidad Necesaria;";
-		header = header + "Semana Otis Expedición Prevista;";
-		header = header + "Uso Interno;";
-		header = header + "Código Proveedor;";
-		header = header + "Contrato;";
-		header = header + "Código de Subsistema;";
-		header = header + "Total Bultos Subsistema;";
-		header = header + "Secuencia del Bulto en Subsistema;";
-		header = header + "Peso Total del Bulto;";
-		header = header + "Uso Interno;";
-		header = header + "Código del C.D Externo;";
-		header = header + "Nombre del C.D Externo;";
-		header = header + "Tipo de Vía;";
-		header = header + "Nombre de la Vía;";
-		header = header + "Nº de Vía 1;";
-		header = header + "Nº de Vía 2;";
-		header = header + "Código Postal;";
-		header = header + "Población;";
-		header = header + "Provincia;";
-		header = header + "N/A;";
-		header = header + "Indicador Tipo Registro";
-		
-		return header;
-		
-	}
-	
-	public void processFiles() {
-		Date date = new Date();
-		SimpleDateFormat date_format = new SimpleDateFormat("_ddMMyyyy_HHmmss");
-		String str_date = date_format.format(date);
+	/**
+	 * Process otis file
+	 * @param pathfile
+	 */
+	public void processFile(String pathfile) {
 		String line = "";
 		String processedline = "";
 		
-		for (int i = 0; i < this.files.size(); i++) {
-			File file = null;
-			FileReader fr = null;
-			BufferedReader br = null;
-			
-			FileWriter fwL = null;
-			PrintWriter pwL = null;
-			
-			FileWriter fwD = null;
-			PrintWriter pwD = null;
-			
-			FileWriter fwF = null;
-			PrintWriter pwF = null;
-			
-			FileWriter fwE = null;
-			PrintWriter pwE = null;
-			
-			FileWriter fwR = null;
-			PrintWriter pwR = null;
-			
-			FileWriter fwT = null;
-			PrintWriter pwT = null;
-			
-			FileWriter fwU = null;
-			PrintWriter pwU = null;
-			
-			FileWriter fwSP = null;
-			PrintWriter pwSP = null;
-			
-			FileWriter fwC = null;
-			PrintWriter pwC = null;
-			
-			try {
-				file = new File(this.files.get(i));
-				fr = new FileReader(file);
-				br = new BufferedReader(fr);
-				System.out.println("Processing file " + file.getName());
-				
-				fwL = new FileWriter(file.getPath() + str_date + "_L.csv");
-				pwL = new PrintWriter(fwL);
-				pwL.println(this.getHeaderL());
-				
-				fwD = new FileWriter(file.getPath() + str_date + "_D.csv");
-				pwD = new PrintWriter(fwD);
-				pwD.println(this.getHeaderD());
-				
-				fwF = new FileWriter(file.getPath() + str_date + "_F.csv");
-				pwF = new PrintWriter(fwF);
-				pwF.println(this.getHeaderF());
-				
-				fwE = new FileWriter(file.getPath() + str_date + "_E.csv");
-				pwE = new PrintWriter(fwE);
-				pwE.println(this.getHeaderE());
-				
-				fwR = new FileWriter(file.getPath() + str_date + "_R.csv");
-				pwR = new PrintWriter(fwR);
-				pwR.println(this.getHeaderR());
-				
-				fwT = new FileWriter(file.getPath() + str_date + "_T.csv");
-				pwT = new PrintWriter(fwT);
-				pwT.println(this.getHeaderT());
-				
-				fwU = new FileWriter(file.getPath() + str_date + "_U.csv");
-				pwU = new PrintWriter(fwU);
-				pwU.println(this.getHeaderU());
-				
-				fwSP = new FileWriter(file.getPath() + str_date + "_SP.csv");
-				pwSP = new PrintWriter(fwSP);
-				pwSP.println(this.getHeaderSP());
-				
-				fwC = new FileWriter(file.getPath() + str_date + "_C.csv");
-				pwC = new PrintWriter(fwC);
-				pwC.println(this.getHeaderC());
-				
-				while ( (line = br.readLine()) != null ) {
-					if ( line.substring(199, 200).equals("L") ) {
-						processedline = this.processLineL(line);
-						pwL.println(processedline);
-					} else if ( line.substring(199, 200).equals("D") ) {
-						processedline = this.processLineD(line);
-						pwD.println(processedline);
-					} else if ( line.substring(199, 200).equals("F") ) {
-						processedline = this.processLineF(line);
-						pwF.println(processedline);
-					} else if ( line.substring(199, 200).equals("E") ) {
-						processedline = this.processLineE(line);
-						pwE.println(processedline);
-					} else if ( line.substring(199, 200).equals("R") ) {
-						processedline = this.processLineR(line);
-						pwR.println(processedline);
-					} else if ( line.substring(199, 200).equals("T") ) {
-						processedline = this.processLineT(line);
-						pwT.println(processedline);
-					} else if ( line.substring(199, 200).equals("U") ) {
-						processedline = this.processLineU(line);
-						pwU.println(processedline);
-					} else if ( line.substring(199, 200).equals("S") || line.substring(199, 200).equals("P")) {
-						processedline = this.processLineSP(line);
-						pwSP.println(processedline);
-					} else if ( line.substring(199, 200).equals("C") ) {
-						processedline = this.processLineC(line);
-						pwC.println(processedline);
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					if (fwL != null) {
-						fwL.close();
-					}
-					if (fwD != null) {
-						fwD.close();
-					}
-					if (fwF != null) {
-						fwF.close();
-					}
-					if (fwE != null) {
-						fwE.close();
-					}
-					if (fwR != null) {
-						fwR.close();
-					}
-					if (fwT != null) {
-						fwT.close();
-					}
-					if (fwU != null) {
-						fwU.close();
-					}
-					if (fwSP != null) {
-						fwSP.close();
-					}
-					if (fwC != null) {
-						fwC.close();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
+		// Init files
+		this.initFiles(pathfile);
+		
+		// Process file
+		try {
+			while ( (line = this.br.readLine()) != null ) {
+				this.lineCounter++;
+				if ( line.substring(199, 200).equals("L") ) {
+					processedline = this.processLineL(line);
+					pwL.println(processedline);
+				} else if ( line.substring(199, 200).equals("D") ) {
+					processedline = this.processLineD(line);
+					pwD.println(processedline);
+				} else if ( line.substring(199, 200).equals("F") ) {
+					processedline = this.processLineF(line);
+					pwF.println(processedline);
+				} else if ( line.substring(199, 200).equals("E") || line.substring(199, 200).equals("X")) {
+					processedline = this.processLineEX(line);
+					pwEX.println(processedline);
+				} else if ( line.substring(199, 200).equals("R") ) {
+					processedline = this.processLineR(line);
+					pwR.println(processedline);
+				} else if ( line.substring(199, 200).equals("T") ) {
+					processedline = this.processLineT(line);
+					pwT.println(processedline);
+				} else if ( line.substring(199, 200).equals("U") ) {
+					processedline = this.processLineU(line);
+					pwU.println(processedline);
+				} else if ( line.substring(199, 200).equals("S") || line.substring(199, 200).equals("P")) {
+					processedline = this.processLineSP(line);
+					pwSP.println(processedline);
+				} else if ( line.substring(199, 200).equals("C") ) {
+					processedline = this.processLineC(line);
+					pwC.println(processedline);
 				}
 			}
-			
+		} catch (StringIndexOutOfBoundsException e) {
+			System.out.println("Line " + this.lineCounter + " too short -> " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
+		System.out.println(this.lineCounter + " Line processed.");
+		// Close files
+		this.closeFiles();
 	}
-	/*
-	public void processFiles() {
+	
+	/**
+	 * Init files where app is going to write otis lines.
+	 * @param pathfile
+	 */
+	private void initFiles(String pathfile) {
 		Date date = new Date();
 		SimpleDateFormat date_format = new SimpleDateFormat("_ddMMyyyy_HHmmss");
 		String str_date = date_format.format(date);
 		
-		for (int i = 0; i < this.files.size(); i++) {
-			String content = "";
-			String line = "";
-			File file = null;
-			FileReader fr = null;
-			BufferedReader br = null;
+		try {
+			this.file = new File(pathfile);
+			this.fr = new FileReader(this.file);
+			this.br = new BufferedReader(this.fr);
+			System.out.println("Processing file " + this.file.getName());
 			
-			FileWriter fw = null;
-			PrintWriter pw = null;
+			this.fwL = new FileWriter(this.file.getPath() + str_date + "_L.csv");
+			this.pwL = new PrintWriter(this.fwL);
+			this.pwL.println(this.getHeaderL());
 			
-			try {
-				file = new File(this.files.get(i));
-				fw = new FileWriter(file.getPath() + str_date + ".csv");
-				
-				System.out.println("Processing file " + file.getName());
-				
-				fr = new FileReader(file);
-				br = new BufferedReader(fr);
-				pw = new PrintWriter(fw);
-				pw.println(this.getHeader());
-				
-				while ( (line = br.readLine()) != null ) {
-					try {
-						content = line.substring(0, 1) + ";";
-						content = content + line.substring(1, 5) + ";";
-						content = content + line.substring(5, 8) + ";";
-						content = content + line.substring(8, 13) + ";";
-						content = content + line.substring(13, 17) + ";";
-						content = content + line.substring(17, 24) + ";";
-						content = content + line.substring(24, 27) + ";";
-						content = content + line.substring(27, 28) + ";";
-						content = content + line.substring(28, 34) + ";";
-						content = content + line.substring(34, 42) + ";";
-						content = content + line.substring(42, 48) + ";";
-						content = content + line.substring(48, 50) + ";";
-						content = content + line.substring(50, 52) + ";";
-						content = content + line.substring(53, 56) + ";";
-						content = content + line.substring(56, 57) + ";";
-						content = content + line.substring(57, 59) + ";";
-						content = content + line.substring(59, 84) + ";";
-						content = content + line.substring(84, 86) + ";";
-						content = content + line.substring(86, 136) + ";";
-						content = content + line.substring(136, 141) + ";";
-						content = content + line.substring(141, 146) + ";";
-						content = content + line.substring(146, 151) + ";";
-						content = content + line.substring(151, 171) + ";";
-						content = content + line.substring(171, 191) + ";";
-						content = content + line.substring(191, 199) + ";";
-						content = content + line.substring(199, 200);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					pw.println(content);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					if (fr != null) {
-						fr.close();
-					}
-					if (fw != null) {
-						fw.close();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
+			this.fwD = new FileWriter(this.file.getPath() + str_date + "_D.csv");
+			this.pwD = new PrintWriter(this.fwD);
+			this.pwD.println(this.getHeaderD());
 			
+			this.fwF = new FileWriter(this.file.getPath() + str_date + "_F.csv");
+			this.pwF = new PrintWriter(this.fwF);
+			this.pwF.println(this.getHeaderF());
+			
+			this.fwEX = new FileWriter(this.file.getPath() + str_date + "_EX.csv");
+			this.pwEX = new PrintWriter(this.fwEX);
+			this.pwEX.println(this.getHeaderEX());
+			
+			this.fwR = new FileWriter(this.file.getPath() + str_date + "_R.csv");
+			this.pwR = new PrintWriter(this.fwR);
+			this.pwR.println(this.getHeaderR());
+			
+			this.fwT = new FileWriter(this.file.getPath() + str_date + "_T.csv");
+			this.pwT = new PrintWriter(this.fwT);
+			this.pwT.println(this.getHeaderT());
+			
+			this.fwU = new FileWriter(this.file.getPath() + str_date + "_U.csv");
+			this.pwU = new PrintWriter(this.fwU);
+			this.pwU.println(this.getHeaderU());
+			
+			this.fwSP = new FileWriter(file.getPath() + str_date + "_SP.csv");
+			this.pwSP = new PrintWriter(fwSP);
+			this.pwSP.println(this.getHeaderSP());
+			
+			this.fwC = new FileWriter(this.file.getPath() + str_date + "_C.csv");
+			this.pwC = new PrintWriter(this.fwC);
+			this.pwC.println(this.getHeaderC());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
-	*/
 	
-	public FmsFile(String[] args) {
-		for (int i = 0; i < args.length; i++) {
-			File f = new File(args[i]);
-			// Check if it's text/plain type file
-			try {
-				if (Files.probeContentType(f.toPath()).equals("text/plain")) {
-					this.files.add(args[i]);
-				} else {
-					throw new Exception(f.getName() + " is not a text/plain file.");
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	/**
+	 * Close files open at the end of process.
+	 */
+	private void closeFiles() {
+		try {
+			if (this.fwL != null) {
+				this.fwL.close();
 			}
+			if (this.fwD != null) {
+				this.fwD.close();
+			}
+			if (this.fwF != null) {
+				this.fwF.close();
+			}
+			if (this.fwEX != null) {
+				this.fwEX.close();
+			}
+			if (this.fwR != null) {
+				this.fwR.close();
+			}
+			if (this.fwT != null) {
+				this.fwT.close();
+			}
+			if (this.fwU != null) {
+				this.fwU.close();
+			}
+			if (this.fwSP != null) {
+				this.fwSP.close();
+			}
+			if (this.fwC != null) {
+				this.fwC.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
