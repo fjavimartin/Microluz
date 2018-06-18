@@ -224,6 +224,90 @@ public class FmsFile {
 		return header;
 	}
 	
+	private String getHeaderSP() {
+		String header;
+		
+		header = "Código Fábrica;";
+		header = header + "Grupo;";
+		header = header + "N/A;";
+		header = header + "N/A;";
+		header = header + "Cantidad necesaria acumulada;";
+		header = header + "Semana otis expedición;";
+		header = header + "N/A;";
+		header = header + "Proveedor;";
+		header = header + "N/A;";
+		header = header + "Código de material;";
+		header = header + "N/A;";
+		header = header + "Descripción material;";
+		header = header + "Acumulado de cables;";
+		header = header + "Vinculado a cables;";
+		header = header + "Cantida necesaria acumulada;";
+		header = header + "N/A;";
+		header = header + "Uso interno;";
+		header = header + "Autorización de fábrica;";
+		header = header + "N/A;";
+		header = header + "Código de proveedor;";
+		header = header + "N/A;";
+		header = header + "Indicador de tipo de registro;";
+		
+		return header;
+	}
+	
+	private String getHeaderC() {
+		String header;
+		
+		header = "Código Fábrica;";
+		header = header + "TRAN;";
+		header = header + "Grupo;";
+		header = header + "Número registros;";
+		header = header + "N/A;";
+		header = header + "Indicador de tipo de registro;";
+		
+		return header;
+	}
+	
+	private String processLineC(String line) {
+		String lineProcessed = "";
+		
+		lineProcessed += line.substring(0, 1) + ";";
+		lineProcessed += line.substring(1, 5) + ";";
+		lineProcessed += line.substring(5, 9) + ";";
+		lineProcessed += line.substring(9, 14) + ";";
+		lineProcessed += line.substring(14, 199) + ";";
+		lineProcessed += line.substring(199, 200) + ";";
+		
+		return lineProcessed;
+	}
+	
+	private String processLineSP(String line) {
+		String lineProcessed = "";
+		
+		lineProcessed += line.substring(0, 1) + ";";
+		lineProcessed += line.substring(1, 5) + ";";
+		lineProcessed += line.substring(5,13) + ";";
+		lineProcessed += line.substring(13,17) + ";";
+		lineProcessed += line.substring(17,24) + ";";
+		lineProcessed += line.substring(24,27) + ";";
+		lineProcessed += line.substring(27,28) + ";";
+		lineProcessed += line.substring(28,34) + ";";
+		lineProcessed += line.substring(34,42) + ";";
+		lineProcessed += line.substring(42,58) + ";";
+		lineProcessed += line.substring(58,62) + ";";
+		lineProcessed += line.substring(62,97) + ";";
+		lineProcessed += line.substring(97,103) + ";";
+		lineProcessed += line.substring(103,108) + ";";
+		lineProcessed += line.substring(108,115) + ";";
+		lineProcessed += line.substring(115,151) + ";";
+		lineProcessed += line.substring(151,152) + ";";
+		lineProcessed += line.substring(152,156) + ";";
+		lineProcessed += line.substring(156,157) + ";";
+		lineProcessed += line.substring(157,163) + ";";
+		lineProcessed += line.substring(163,199) + ";";
+		lineProcessed += line.substring(199,200) + ";";
+		
+		return lineProcessed;
+	}
+	
 	private String processLineU(String line) {
 		String lineProcessed = "";
 		
@@ -502,6 +586,12 @@ public class FmsFile {
 			FileWriter fwU = null;
 			PrintWriter pwU = null;
 			
+			FileWriter fwSP = null;
+			PrintWriter pwSP = null;
+			
+			FileWriter fwC = null;
+			PrintWriter pwC = null;
+			
 			try {
 				file = new File(this.files.get(i));
 				fr = new FileReader(file);
@@ -536,6 +626,14 @@ public class FmsFile {
 				pwU = new PrintWriter(fwU);
 				pwU.println(this.getHeaderU());
 				
+				fwSP = new FileWriter(file.getPath() + str_date + "_SP.csv");
+				pwSP = new PrintWriter(fwSP);
+				pwSP.println(this.getHeaderSP());
+				
+				fwC = new FileWriter(file.getPath() + str_date + "_C.csv");
+				pwC = new PrintWriter(fwC);
+				pwC.println(this.getHeaderC());
+				
 				while ( (line = br.readLine()) != null ) {
 					if ( line.substring(199, 200).equals("L") ) {
 						processedline = this.processLineL(line);
@@ -556,8 +654,14 @@ public class FmsFile {
 						processedline = this.processLineT(line);
 						pwT.println(processedline);
 					} else if ( line.substring(199, 200).equals("U") ) {
-						processedline = this.processLineT(line);
+						processedline = this.processLineU(line);
 						pwU.println(processedline);
+					} else if ( line.substring(199, 200).equals("S") || line.substring(199, 200).equals("P")) {
+						processedline = this.processLineSP(line);
+						pwSP.println(processedline);
+					} else if ( line.substring(199, 200).equals("C") ) {
+						processedline = this.processLineC(line);
+						pwC.println(processedline);
 					}
 				}
 			} catch (Exception e) {
@@ -581,6 +685,15 @@ public class FmsFile {
 					}
 					if (fwT != null) {
 						fwT.close();
+					}
+					if (fwU != null) {
+						fwU.close();
+					}
+					if (fwSP != null) {
+						fwSP.close();
+					}
+					if (fwC != null) {
+						fwC.close();
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
